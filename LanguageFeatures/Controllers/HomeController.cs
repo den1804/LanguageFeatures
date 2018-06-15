@@ -59,7 +59,7 @@ namespace LanguageFeatures.Controllers
             decimal total = 0;
             for (int i = 0; i < data.Length; i++)
             {
-                switch(data[i])
+                switch (data[i])
                 {
                     case decimal decimalVal:
                         total += decimalVal;
@@ -70,6 +70,43 @@ namespace LanguageFeatures.Controllers
                 }
             }
             return View("Index", new string[] { $"Total: {total:C2}" });
+        }
+        public ViewResult UsingExtensionMethods()
+        {
+            ShoppingCart cart = new ShoppingCart { Products = Product.GetProducts() };
+            decimal cartTotal = cart.TotalPrices();
+            return View("Index", new string[] { $"Total: {cartTotal:C2}" });
+        }
+        public ViewResult UsingExtensionMethodsWithInterface()
+        {
+            ShoppingCart cart = new ShoppingCart { Products = Product.GetProducts() };
+            Product[] productArray =
+            {
+                new Product { Name = "Kayak", Price = 275M },
+                new Product { Name = "Lifejacket", Price = 48.95M }
+            };
+            decimal cartTotal = cart.TotalPrices();
+            decimal arrayTotal = productArray.TotalPrices();
+            return View("Index", new string[] {
+                $"Total card: {cartTotal}",
+                $"Total array: {arrayTotal}"
+            });
+        }
+        public ViewResult UsingExtensionMethodsFiltering()
+        {
+            Product[] productArray =
+            {
+                new Product { Name = "Kayak", Price = 275M },
+                new Product { Name = "Lifejacket", Price = 48.95M },
+                new Product { Name = "Soccer ball", Price = 19.50M },
+                new Product { Name = "Corner flag", Price = 34.95M }
+            };
+            decimal arrayTotal = productArray.FilterByPirce(35).TotalPrices();
+
+            List<Product> products = new List<Product>();
+            products.AddRange(productArray.FilterByPirce(35));
+
+            return View("Index", new string[] { $"Total: {arrayTotal:C2}" });
         }
     }
 }
