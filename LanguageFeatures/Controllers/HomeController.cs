@@ -16,7 +16,9 @@ namespace LanguageFeatures.Controllers
             {
                 string name = product?.Name;
                 decimal? price = product?.Price;
-                results.Add(String.Format("Name: {0}, Price: {1}", name, price));
+                // The null conditional operator can be applied to each part of a chain of properties, like this:
+                string relatedName = product?.Related?.Name;
+                results.Add(String.Format("Name: {0}, Price: {1}, Related: {2}", name, price, relatedName));
             }
             return View(results);
         }
