@@ -18,9 +18,26 @@ namespace LanguageFeatures.Controllers
                 decimal? price = product?.Price ?? 0;
                 // The null conditional operator can be applied to each part of a chain of properties, like this:
                 string relatedName = product?.Related?.Name ?? "None";
-                results.Add(String.Format("Name: {0}, Price: {1}, Related: {2}", name, price, relatedName));
+                // using string interpolation 
+                results.Add($"Name: {name}, Price: {price}, Related: {relatedName}");
             }
             return View(results);
+        }
+        public ViewResult UsingDictionary()
+        {
+            // Old way of initialization
+            //Dictionary<string, Product> products = new Dictionary<string, Product>
+            //{
+            //    { "Kayak", new Product { Name = "Kayak", Price = 275M } },
+            //    { "Lifejacket", new Product { Name = "Lifejacket", Price = 48.95M } }
+            //};
+            // New way of initialization
+            Dictionary<string, Product> products = new Dictionary<string, Product>
+            {
+                ["Kayak"] = new Product { Name = "Kayak", Price = 275M },
+                ["Lifejacket"] = new Product { Name = "Lifejacket", Price = 48.95M }
+            };
+            return View("Index", products.Keys);
         }
     }
 }
