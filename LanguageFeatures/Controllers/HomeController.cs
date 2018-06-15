@@ -45,12 +45,29 @@ namespace LanguageFeatures.Controllers
             decimal total = 0;
             for (int i = 0; i < data.Length; i++)
             {
-
                 // В переменную total попадет только 2 заначения из массива data
                 // Таке можно отметить что изпользование такого подхода избавляет нас от 
                 // дополнительных преобразований 
                 if (data[i] is decimal d)
                     total += d;
+            }
+            return View("Index", new string[] { $"Total: {total:C2}" });
+        }
+        public ViewResult UsingPatternMatchingWithSwitch()
+        {
+            object[] data = new object[] { 275M, 29.9M, "apple", "orange", 100, 10 };
+            decimal total = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                switch(data[i])
+                {
+                    case decimal decimalVal:
+                        total += decimalVal;
+                        break;
+                    case int intVal when intVal > 50:
+                        total += intVal;
+                        break;
+                }
             }
             return View("Index", new string[] { $"Total: {total:C2}" });
         }
