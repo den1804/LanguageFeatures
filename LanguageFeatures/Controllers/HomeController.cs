@@ -39,5 +39,20 @@ namespace LanguageFeatures.Controllers
             };
             return View("Index", products.Keys);
         }
+        public ViewResult UsingPatternMatching()
+        {
+            object[] data = new object[] { 275M, 29.9M, "apple", "orange", 100, 10 };
+            decimal total = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+
+                // В переменную total попадет только 2 заначения из массива data
+                // Таке можно отметить что изпользование такого подхода избавляет нас от 
+                // дополнительных преобразований 
+                if (data[i] is decimal d)
+                    total += d;
+            }
+            return View("Index", new string[] { $"Total: {total:C2}" });
+        }
     }
 }
