@@ -14,7 +14,8 @@ namespace LanguageFeatures.Models
         public Product Related { get; set; }
         // Creating Read-Only Automatically Implemented Properties
         // Данное свойство не возможно изменить, разве что только в конструкторе
-        public bool InStock { get; } = true;  
+        public bool InStock { get; } = true;
+        public bool NameBeginsWithS => Name?[0] == 'S';
 
         public static Product[] GetProducts()
         {

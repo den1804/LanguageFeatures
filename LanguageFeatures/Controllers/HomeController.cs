@@ -9,6 +9,15 @@ namespace LanguageFeatures.Controllers
 {
     public class HomeController : Controller
     {
+        #region Data
+        Product[] productArray =
+            {
+                new Product { Name = "Kayak", Price = 275M },
+                new Product { Name = "Lifejacket", Price = 48.95M },
+                new Product { Name = "Soccer ball", Price = 19.50M },
+                new Product { Name = "Corner flag", Price = 34.95M }
+            };
+        #endregion
         public ViewResult Index()
         {
             List<string> results = new List<string>();
@@ -80,11 +89,7 @@ namespace LanguageFeatures.Controllers
         public ViewResult UsingExtensionMethodsWithInterface()
         {
             ShoppingCart cart = new ShoppingCart { Products = Product.GetProducts() };
-            Product[] productArray =
-            {
-                new Product { Name = "Kayak", Price = 275M },
-                new Product { Name = "Lifejacket", Price = 48.95M }
-            };
+
             decimal cartTotal = cart.TotalPrices();
             decimal arrayTotal = productArray.TotalPrices();
             return View("Index", new string[] {
@@ -94,19 +99,59 @@ namespace LanguageFeatures.Controllers
         }
         public ViewResult UsingExtensionMethodsFiltering()
         {
-            Product[] productArray =
-            {
-                new Product { Name = "Kayak", Price = 275M },
-                new Product { Name = "Lifejacket", Price = 48.95M },
-                new Product { Name = "Soccer ball", Price = 19.50M },
-                new Product { Name = "Corner flag", Price = 34.95M }
-            };
+
             decimal arrayTotal = productArray.FilterByPirce(35).TotalPrices();
 
             List<Product> products = new List<Product>();
             products.AddRange(productArray.FilterByPirce(35));
 
             return View("Index", new string[] { $"Total: {arrayTotal:C2}" });
+        }
+        public ViewResult UsingLambdaExpressions()
+        {
+            decimal priceFilterTotal = productArray.FilterByPirce(20).TotalPrices();
+            decimal nameFilterTotal = productArray.FilterByName('S').TotalPrices();
+
+            return View("Index", new string[]
+            {
+                $"Price Total: {priceFilterTotal:C2}",
+                $"Name Total: {nameFilterTotal:C2}"
+            });
+        }
+        private bool FilterByPirce(Product product)
+        {
+            return (product?.Price ?? 0) >= 20;
+        }
+        // не удобно и не практично! Громоздко 
+        public ViewResult UsingDefiningFunctions()
+        {
+            Func<Product, bool> nameFilter = delegate (Product product)
+            {
+                return product?.Name?[0] == 'S';
+            };
+            decimal priceFilterTotal = productArray.Filter(FilterByPirce)
+                .TotalPrices();
+            decimal nameFilterTotal = productArray.Filter(nameFilter)
+                .TotalPrices();
+            return View("Index", new string[]
+           {
+                $"Price Total: {priceFilterTotal:C2}",
+                $"Name Total: {nameFilterTotal:C2}"
+           });
+        }
+        // лучше делать так 
+        public ViewResult UsingDefiningFunctionsWithLambda()
+        {
+
+            decimal priceFilterTotal = productArray.Filter(p => (p?.Price ?? 0) >= 20)
+                .TotalPrices();
+            decimal nameFilterTotal = productArray.Filter(p => p?.Name?[0] == 'S')
+                .TotalPrices();
+            return View("Index", new string[]
+           {
+                $"Price Total: {priceFilterTotal:C2}",
+                $"Name Total: {nameFilterTotal:C2}"
+           });
         }
     }
 }

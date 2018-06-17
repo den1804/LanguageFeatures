@@ -26,5 +26,27 @@ namespace LanguageFeatures.Models
             }
 
         }
+        public static IEnumerable<Product> FilterByName(this IEnumerable<Product> productEnum,
+            char firstLetter)
+        {
+            foreach (Product product in productEnum)
+            {
+                if (product?.Name[0] == firstLetter)
+                {
+                    yield return product;
+                }
+            }
+        }
+        public static IEnumerable<Product> Filter (this IEnumerable<Product> productEnum,
+            Func<Product,bool> selector)
+        {
+            foreach (Product product in productEnum)
+            {
+                if (selector(product))
+                {
+                    yield return product;
+                }
+            }
+        }
     }
 }
