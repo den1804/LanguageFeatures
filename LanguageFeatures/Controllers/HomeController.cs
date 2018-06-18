@@ -153,5 +153,10 @@ namespace LanguageFeatures.Controllers
                 $"Name Total: {nameFilterTotal:C2}"
            });
         }
+        public async Task<ViewResult> UsingAsyncMethods()
+        {
+            long? length = await MyAsyncMethods.GetPageLength();
+            return View("Index", new string[] { $"Length: {length}" });
+        }
     }
 }
